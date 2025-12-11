@@ -7,11 +7,17 @@ import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
 
+// new, you have to manually write it to get access of common actions
+// this is possible when they are static in nature, * means all
+// This is called static import
+import static common.CommonActions.*;
+
 public class HomePage {
 	WebDriver driver;
 
 	public HomePage(WebDriver driver) {
 		this.driver = driver;
+		// If there is no PageFactory class, WebElement will show NullPointerException
 		PageFactory.initElements(driver, this);
 	}
 	
@@ -61,21 +67,31 @@ public class HomePage {
 	@FindBy(partialLinkText = "Pass")
 	WebElement forgotPassword;
 	
+	@FindBy(xpath = "//label[@id='cms-label-tc']")
+	WebElement termsAndCondition;
 	
+	@FindBy(id = "cms-login-submit")
+	WebElement login;
+	
+	// We used throws InterruptedException to handle the exception
 	public void clickLogo() throws InterruptedException {
+		// common method 'clickElement()' is not used here
+		// common method 'pause()' is not used here
 		logo.click();
 		Thread.sleep(5000);
 	}
 	
 	public void clickForgotUserId() {
-		forgotUserId.click();
-		System.out.println("First");
+		clickElement(forgotUserId);
 	}
 	
+	// We used try-catch block to handle exception [Thread.sleep()] in this method
 	public void clickUserId() {
+		// common method 'pause()' is not used here
 		try {
 			Thread.sleep(4000);
-			userId.click();
+			// common method 'clickElement()' is used here
+			clickElement(userId);
 			System.out.println("Second");
 			Thread.sleep(4000);
 		} catch (InterruptedException e) {
@@ -84,11 +100,15 @@ public class HomePage {
 	}
 	
 	public void clickPassword() {
-		password.click();
+		// common method 'clickElement()' is used here
+		clickElement(password);
+		// common method 'pause()' is used here
+		pause(4000);
 	}
 	
 	public void clickNewUserRegistration() {
-		newUserRegistration.click();
+		clickElement(newUserRegistration);
+		pause(4000);
 	}
 	
 	public void clickWrongLogo() {
@@ -105,6 +125,7 @@ public class HomePage {
 	public void inputTextInUserIdField() {
 		try {
 			Thread.sleep(5000);
+			// common method 'inputText()' is not used here
 			userId.sendKeys("September 2025 Batch");
 			Thread.sleep(5000);
 			password.sendKeys("Hakuna Mata");
@@ -118,12 +139,7 @@ public class HomePage {
 	// How to show the exception: NoSuchElementException
 	
 	public void clickIncorrectNewUserRegistration() {
-		try {
-			Thread.sleep(5000);
-			incorrectNewUserRegistration.click();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		clickElement(incorrectNewUserRegistration);
 	}
 	
 	// Important: Use of linkText as unique locator
@@ -131,7 +147,7 @@ public class HomePage {
 	public void use_of_linkText_as_locator_in_forgot_userId_hyperlink() {
 		try {
 			Thread.sleep(5000);
-			forgotUserIdElement.click();
+			clickElement(forgotUserIdElement);
 			Thread.sleep(4000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
@@ -143,14 +159,12 @@ public class HomePage {
 	public void use_of_partialLinkText_as_locator_in_forgot_passowrd_hyperlink() {
 		try {
 			Thread.sleep(5000);
-			forgotPassword.click();
+			clickElement(forgotPassword);
 			Thread.sleep(5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
-
-	
 	
 	public void getMethods() {
 		// getTitle() provide us the title of the page
@@ -164,6 +178,34 @@ public class HomePage {
 		// getText() provide us the text of the WebElement
 		 String nur = newUserRegistration.getText();
 		 System.out.println("The text present in the web element is: " + nur);
+	}
+	
+	// We are using 3 common actions here -- click(), pause(), inputText()
+	public void inputTextInUserIdAndPasswordFieldThenClickIAgreeAndFinallyClickToTheLoginButton() {
+		pause(3000);
+		// common method 'inputText()' is used here
+		inputText(userId, "enthrall_12");
+		pause(3000);
+		inputText(password, "Nabeeha19@12345678");
+		pause(3000);
+		clickElement(termsAndCondition);
+		pause(3000);
+		clickElement(login);
+		pause(3000);
+	}
+	
+	// Alternate of above method {Raw Code, some people like to use this way}
+	// We can use a web element directly in the method, that is also common
+	// we don't need to create "webElement" and "common method"
+	public void useOfByClassInLoginProcess() throws InterruptedException {
+		Thread.sleep(4000);
+		driver.findElement(By.name("user-d")).sendKeys("enthrall_12");
+		driver.findElement(By.name("pass-d")).sendKeys("Nabeeha19@12345678");
+		Thread.sleep(4000);
+		driver.findElement(By.xpath("//label[@id='cms-label-tc']")).click();
+		Thread.sleep(4000);
+		driver.findElement(By.id("cms-login-submit")).click();
+		Thread.sleep(4000);
 	}
 	
 	

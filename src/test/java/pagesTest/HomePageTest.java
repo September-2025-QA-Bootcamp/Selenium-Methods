@@ -15,7 +15,7 @@ public class HomePageTest extends BaseClass{
 		homePage.clickLogo();
 	}
 	
-	@Test (enabled = false, priority = 1)
+	@Test (enabled = true, priority = 1)
 	public void clickForgotUserIdTest() {
 		homePage.clickForgotUserId();
 	}
@@ -74,8 +74,16 @@ public class HomePageTest extends BaseClass{
 		homePage.getMethods();
 	}
 	
-	//
-	
+	@Test
+	public void inputTextInUserIdAndPasswordFieldThenClickIAgreeAndFinallyClickToTheLoginButtonTest() {
+		homePage.inputTextInUserIdAndPasswordFieldThenClickIAgreeAndFinallyClickToTheLoginButton();
+	}	
+		
+	@Test
+	public void useOfByClassInLoginProcessTest() throws InterruptedException {
+		homePage.useOfByClassInLoginProcess();
+	}	
+		
 	
 	
 	

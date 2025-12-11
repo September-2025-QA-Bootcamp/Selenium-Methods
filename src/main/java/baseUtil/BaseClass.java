@@ -10,39 +10,36 @@ import org.testng.annotations.BeforeMethod;
 import pages.HomePage;
 
 public class BaseClass {
-	// Why default type is not ok for below 2 line? 
-	// because different package [baseUtil & HomePageTest] accessibility is not possible for default type
-	public WebDriver driver; // or we can use protected type
-	public HomePage homePage; // or we can use protected type
+	public WebDriver driver;
+	public HomePage homePage;
 	
 	@BeforeMethod
 	public void setUp() throws InterruptedException {
-		// First job is to recognize the location of driver from your Framework
-		// right click on chromedriver.exe(windows)/chromedriver(mac) ---> properties ---> copy the location and paste below
-		// System is a Java class and setProperty is a method of System Class		
-		// 1st way, to show the location of chrome driver below
+		// 1st way, to show the location of chrome driver
 		// This is an absolute path
-		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Tofael\\eclipse-workspace\\gov.cms.portal.sep2025\\driver\\chromedriver.exe");
-		// We instantiated the WebDriver here
+		// System.setProperty("webdriver.chrome.driver", "C:\\Users\\Tofael\\eclipse-workspace\\gov.cms.portal.sep2025\\driver\\chromedriver.exe");
+		
+		// 2nd way, to show the location of the chrome driver
+		// This is a dynamic way (relative path)
+		// user.dir means --> System set the property to User Directory, here - it is till the project
+		// System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir")+"/driver/chromedriver.exe");
+		
+		// 3rd and final way, to show the location of chrome driver
+		// This is a dynamic path (relative path)
+		// I will use this one, till end of the course
+		System.setProperty("webdriver.chrome.driver", "./driver/chromedriver.exe");
+		
 		driver = new ChromeDriver();
-		// maximize() method is used to maximize the window ---> mostly used
-		Thread.sleep(5000); // using this method to see below change
 		driver.manage().window().maximize();
-		// HTTP cookies are small blocks of data created by a web server while a user is browsing a website
-		// deleteAllCookies() method do delete the cookies
 		driver.manage().deleteAllCookies();
-		// get() method is used to access the url
 		driver.get("https://portal.cms.gov/portal/");
-		// PageLoadTimeout() method is used for wait to load the page for curtain amount of time
 		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
-		// ImplicitlyWait() method is used to wait for each web element
 		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
 		homePage = new HomePage(driver);
 	}
 	
 	@AfterMethod
 	public void tearUp() {
-		// quit() method is used To close all the opened WebDriver instances
 		driver.quit();
 	}
 	

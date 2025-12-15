@@ -65,13 +65,8 @@ public class HomePageTest extends BaseClass{
 	}
 	
 	@Test
-	public void use_of_partialLinkText_as_locator_in_forgot_passowrd_hyperlink() {
+	public void use_of_partialLinkText_as_locator_in_forgot_passowrd_hyperlink_test() {
 		homePage.use_of_partialLinkText_as_locator_in_forgot_passowrd_hyperlink();
-	}
-	
-	@Test
-	public void getMethodsTest() {
-		homePage.getMethods();
 	}
 	
 	@Test
@@ -83,6 +78,108 @@ public class HomePageTest extends BaseClass{
 	public void useOfByClassInLoginProcessTest() throws InterruptedException {
 		homePage.useOfByClassInLoginProcess();
 	}	
+		
+	@Test
+	public void why_we_use_cssSelector_as_locator_in_logo_test () {
+		homePage.why_we_use_cssSelector_as_locator_in_logo();
+	}
+	
+	@Test
+	public void rule1a_use_of_cssSelector_by_class_name_value_test () {
+		homePage.rule1a_use_of_cssSelector_by_class_name_value();
+	}
+	
+	@Test
+	public void rule1b_use_of_cssSelector_by_class_name_value_test () {
+		homePage.rule1b_use_of_cssSelector_by_class_name_value();
+	}
+	
+	@Test
+	public void rule2a_use_of_cssSelector_by_id_value_test() {
+		homePage.rule2a_use_of_cssSelector_by_id_value();
+	}
+	
+	@Test
+	public void rule2b_use_of_cssSelector_by_id_value_test() {
+		homePage.rule2b_use_of_cssSelector_by_id_value();
+	}
+	
+	@Test
+	public void rule3_use_of_cssSelector_by_compund_class_name_value_test () {
+		homePage.rule3_use_of_cssSelector_by_compund_class_name_value();
+	}
+	
+	@Test
+	public void rule4_use_of_cssSelector_by_attribute_and_its_value_test () {
+		homePage.rule4_use_of_cssSelector_by_attribute_and_its_value();
+	}	
+	
+	@Test
+	public void rule5_use_of_cssSelector_by_class_name_value_and_attribute_and_its_value_test() {
+		homePage.rule5_use_of_cssSelector_by_class_name_value_and_attribute_and_its_value();
+	}
+	
+	@Test
+	public void rule6_use_of_cssSelector_by_id_value_and_attribute_and_its_value_test() {
+		homePage.rule6_use_of_cssSelector_by_id_value_and_attribute_and_its_value();
+	}	
+	
+	@Test
+	public void rule7_use_of_cssSelector_by_compund_class_name_value_and_attribute_and_its_value_test() {
+		homePage.rule7_use_of_cssSelector_by_compund_class_name_value_and_attribute_and_its_value();
+	}
+	
+	@Test
+	public void use_of_tagName_as_locator_test() {
+		homePage.use_of_tagName_as_locator();
+	}
+	
+	@Test
+	public void use_of_isDisplayed_01_test() {
+		homePage.use_of_isDisplayed_01();
+	}
+	
+	@Test
+	public void use_of_isDisplayed_02_test() {
+		homePage.use_of_isDisplayed_02();
+	}
+	
+	@Test
+	public void use_of_isDisplayed_in_login_test () {
+		homePage.use_of_isDisplayed_in_login();
+	}
+	
+	@Test
+	public void use_of_isSelected_in_login_test() {
+		homePage.use_of_isSelected_in_login();
+	}
+	
+	@Test
+	public void use_of_isEnabled_in_login_test() {
+		homePage.use_of_isEnabled_in_login();
+	}
+	
+	@Test
+	public void getMethodsTest() {
+		homePage.getMethods();
+	}
+	
+	@Test
+	public void newUserRegistrationPageValidationTest() {
+		homePage.newUserRegistrationPageValidation();
+	}
+	
+	@Test
+	public void use_of_getAttribute_method_test () {
+		homePage.use_of_getAttribute_method();
+	}
+	
+	@Test
+	public void use_of_clear_in_login_test() {
+		homePage.use_of_clear_in_login();
+	}
+	
+	
 		
 	
 	

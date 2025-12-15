@@ -6,6 +6,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
+import org.testng.Assert;
 
 // new, you have to manually write it to get access of common actions
 // this is possible when they are static in nature, * means all
@@ -72,6 +73,19 @@ public class HomePage {
 	
 	@FindBy(id = "cms-login-submit")
 	WebElement login;
+	
+	@FindBy(css = "a.cms-newuser-reg")
+	WebElement nurCSS;
+	
+	@FindBy(css = "button#cms-login-submit")
+	WebElement loginCSS;
+	
+	@FindBy(tagName = "header")
+	WebElement headerTag;
+	
+	@FindBy(css = "em.cms-icon.cms-sprite-loggedout.ms-3")
+	WebElement logoCSS;
+	
 	
 	// We used throws InterruptedException to handle the exception
 	public void clickLogo() throws InterruptedException {
@@ -166,20 +180,6 @@ public class HomePage {
 		}
 	}
 	
-	public void getMethods() {
-		// getTitle() provide us the title of the page
-		String actual = driver.getTitle();
-		System.out.println("Title of the Page: " + actual);
-		
-		// getCurrentUrl() provide us the current URL of the page
-		String currentUrl = driver.getCurrentUrl();
-		System.out.println("Current URL: " + currentUrl);
-		
-		// getText() provide us the text of the WebElement
-		 String nur = newUserRegistration.getText();
-		 System.out.println("The text present in the web element is: " + nur);
-	}
-	
 	// We are using 3 common actions here -- click(), pause(), inputText()
 	public void inputTextInUserIdAndPasswordFieldThenClickIAgreeAndFinallyClickToTheLoginButton() {
 		pause(3000);
@@ -208,7 +208,266 @@ public class HomePage {
 		Thread.sleep(4000);
 	}
 	
+	// Web Element: Logo
+	// logo: class attribute value:  cms-icon cms-sprite-loggedout ms-3
+	// Exception 'InvalidSelectorException': 'Compound class names not permitted',
+	// so even if you see class value is unique but separated by space, 
+	// avoid this as a class name locator, rather use css selector
+	// This scenario will show error and will failed everywhere
+	public void why_we_use_cssSelector_as_locator_in_logo () {
+		driver.findElement(By.className("cms-icon cms-sprite-loggedout ms-3")).click();
+		pause(3000);
+	}
 	
+	// Web Element: New User Registration Button
+	// Important: Use of cssSelector as locator
+	// cssSelector is very important for interview
+	// cssSelector by class --> inside the string, first put html tag, then dot, then write value of the class attribute 
+	// define the web element above
+	public void rule1a_use_of_cssSelector_by_class_name_value () {
+		clickElement(nurCSS);
+		pause(3000);
+	}
+	
+	// We can also do by findEleent() method
+	public void rule1b_use_of_cssSelector_by_class_name_value () {
+		driver.findElement(By.cssSelector("a.cms-newuser-reg")).click();
+		pause(3000);
+	}
+	
+	// Important: Use of cssSelector as locator
+	// Web Element: login Button
+	// if you want to create cssSelector by id 
+	// first html tag, then # (hash), then write the value of id attribute inside the string
+	// Please see above line implemented in Web Element
+	public void rule2a_use_of_cssSelector_by_id_value() {
+		clickElement(loginCSS);
+		pause(3000);
+	}
+		
+	public void rule2b_use_of_cssSelector_by_id_value() {
+		driver.findElement(By.cssSelector("button#cms-login-submit")).click();
+		pause(3000);
+	}
+	
+	// Web Element: logo
+	// Important: Use of cssSelector as locator
+	// if the class (compound class) contain separate words [cms-icon cms-sprite-loggedout ms-3], 
+	// they are actually different class [Parent child relation], then
+	// we have to close the gap between classes by putting the dot/period
+	// cssSelector by class --> htmltag.class name value 
+	// remove the space between words in class value, and replace with dot/period
+	public void rule3_use_of_cssSelector_by_compund_class_name_value () {
+		driver.findElement(By.cssSelector("em.cms-icon.cms-sprite-loggedout.ms-3")).click();
+		pause(4000);
+	}
+	
+	// Above 3 is mostly used, 99% cases of css selector, also very common important interview question
+	// below 3 high level, no need to see if you feel they are tough
+
+	// Use of cssSelector as locator
+	// Web Element: login Button
+	// high level, you can ignore
+	// cssSelector by another attribute
+	// --> htmltag[id/class/name attribute = 'value of the attribute' ] , in xpath - you use // and @, which is absent here 
+	// and you can use any other attribute name except id and class
+	public void rule4_use_of_cssSelector_by_attribute_and_its_value () {
+		driver.findElement(By.cssSelector("button[name='Submit Login']")).click();
+		pause(4000);
+	}
+	
+	// Web Element: NUR Button
+	// Not important, can ignore
+	// cssSelector by another attribute
+	// --> htmltag.value of class[id/class/name attribute = 'value of the attribute'] , in xpath you use // and @, which is absent here and you can use attribute except id and class
+	// That's why we use title
+	public void rule5_use_of_cssSelector_by_class_name_value_and_attribute_and_its_value() {
+		driver.findElement(By.cssSelector("a.cms-newuser-reg[title='New User Registration']")).click();
+		pause(4000);
+	}
+	
+	// Important: Use of cssSelector as locator
+	// Web Element: login Button
+	// Not important, can ignore
+	// cssSelector by another attribute
+	// --> htmltag#value of ID[attribute name='value'] , in xpath you use // and @, which is absent here and you can use attribute except id and class	
+	public void rule6_use_of_cssSelector_by_id_value_and_attribute_and_its_value() {
+		driver.findElement(By.cssSelector("button#cms-login-submit[name='Submit Login']")).click();
+		pause(4000);
+	}
+	
+	public void rule7_use_of_cssSelector_by_compund_class_name_value_and_attribute_and_its_value() {
+		driver.findElement(By.cssSelector("em.cms-icon.cms-sprite-loggedout.ms-3[title='CMS Enterprise Portal']")).click();
+		pause(4000);
+	}
+	
+	// Important: Use of tagName as locator
+	// tag name: we have to go to Amazon and find "table" tag, which is unique [They move it]
+	
+	// in cms portal not a single tag except header
+	public void use_of_tagName_as_locator() {
+		clickElement(headerTag);
+		pause(3000);
+	}
+	
+	// Web Element: logo
+	// isDisplayed() method is boolean type, outcome: true or false
+	// isDisplayed() is the method, used to verify the presence of a web element within the web page.
+	// Use of isDisplayed() available in --> image, link, button, text field, check box etc.
+	public void use_of_isDisplayed_01() {
+		boolean elementDisplayed = driver.findElement(By.cssSelector("em.cms-icon.cms-sprite-loggedout.ms-3")).isDisplayed();
+		System.out.println("Is the Logo displayed? Ans: " + elementDisplayed);
+		pause(3000);
+	}
+	
+	public void use_of_isDisplayed_02() {
+		//logoCSS.isDisplayed();
+		// if we use sysout, we don't need above line
+		System.out.println("Logo Displayed? >>> "+logoCSS.isDisplayed());
+		// we can use like above way but not suggested, rather give a name instead
+		pause(3000);
+	}
+	
+	// use of isDisplayed method inside our common actions --> elementDisplayed()
+	// Use of isDisplayed() available in --> image, link, button, text field, check box etc.
+	public void use_of_isDisplayed_in_login () {
+		pause(3000);
+		// common method elementDisplayed() is used
+		elementDisplayed(userId);
+		inputText(userId, "enthrall_12");
+		pause(3000);
+		// common method elementDisplayed() is used
+		elementDisplayed(password);
+		inputText(password, "Nabeeha19@12345678");
+		pause(3000);
+		clickElement(termsAndCondition);
+		pause(3000);
+		clickElement(login);
+		pause(3000);
+	}
+	
+	// Web Element: checkbox
+	// isSelected() Used with radio buttons, dropdowns and checkboxes.
+	// use of isSelected() method inside
+	// TODO: Why showing false for isSelected?
+	public void use_of_isSelected_in_login() {
+		pause(3000);
+		// common method elementDisplayed() is used
+		elementDisplayed(userId);
+		inputText(userId, "enthrall_12");
+		pause(3000);
+		// common method elementDisplayed() is used
+		elementDisplayed(password);
+		inputText(password, "Nabeeha19@12345678");
+		pause(3000);
+		// common method elementSelected() is used
+		elementSelected(termsAndCondition);
+		clickElement(termsAndCondition);
+		pause(3000);
+		clickElement(login);
+		pause(3000);
+	}
+	
+	// Web Element: login Button
+	// isEnabled() is the method used to verify if the web element is enabled or
+	// disabled within the web page. isEnabled() is primarily used with "buttons".
+	// Use of isEnabled(), a boolean type method	
+	// use of isEnabled method inside elementEnabled()
+	public void use_of_isEnabled_in_login() {
+		pause(3000);
+		// common method elementDisplayed() is used
+		elementDisplayed(userId);
+		inputText(userId, "enthrall_12");
+		pause(3000);
+		// common method elementDisplayed() is used
+		elementDisplayed(password);
+		inputText(password, "Nabeeha19@12345678");
+		pause(3000);
+		// common method elementSelected() is used
+		elementSelected(termsAndCondition);
+		clickElement(termsAndCondition);
+		pause(3000);
+		// common method elementEnabled() is used
+		elementEnabled(login);
+		clickElement(login);
+		pause(3000);
+	}
+	
+	public void getMethods() {
+		// getTitle() provide us the title of the page
+		String actual = driver.getTitle();
+		System.out.println("Title of the Page: " + actual);
+		String expected = "CMS Enterprise Portal";
+		Assert.assertEquals(actual, expected, "Title doesn't match up");
+		// if the Assertion [validation] fail, "Title doesn't match up" will show up
+		
+		// getCurrentUrl() provide us the current URL of the page
+		String currentUrl = driver.getCurrentUrl();
+		System.out.println("Current URL: " + currentUrl);
+		String expectedURL = "https://portal.cms.gov/portal/";
+		Assert.assertEquals(currentUrl, expectedURL, "The driver failed to direct at right URL");
+		
+		// getText() provide us the text of the WebElement
+		// use of getText() in "login button"
+		String actualTextPresntInTheWebElement = login.getText();
+		System.out.println("Text Present as: " + actualTextPresntInTheWebElement);
+		String expectedTextPresntInTheWebElement = "Login";
+		Assert.assertEquals(actualTextPresntInTheWebElement, expectedTextPresntInTheWebElement, "The text present in the WebElement doesn't match");	
+	}
+	
+	// This is the first method used during automation framework
+	// what is title?
+	// what is the url?
+	// is logo displayed?
+	// here, method coming from common action
+	public void newUserRegistrationPageValidation() {
+		elementDisplayed(logo);
+		verifyTitle(driver, "CMS Enterprise Portal");
+		verifyCurrentUrl(driver, "https://portal.cms.gov/portal/");
+		elementEnabled(newUserRegistration);
+		verifyTextOfTheWebElement(newUserRegistration, "New User Registration");
+		clickElement(newUserRegistration);
+		pause(3000);
+		verifyTitle(driver, "CMS Enterprise Portal - New User Registration");
+		verifyCurrentUrl(driver, "https://portal.cms.gov/portal/newuserregistration");
+		pause(3000);
+	}
+	
+	// Here We used User ID field
+	// getAttribute() method actually give us, the value of the Attribute, 
+	// raw use, in next method we will use from common action
+	public void use_of_getAttribute_method () {
+		elementDisplayed(userId);
+		pause(3000);
+		String ml =  userId.getAttribute("maxlength");
+		System.out.println("The value of the maxlength attribute is: " + ml);
+		// another example
+		String ph = userId.getAttribute("placeholder");
+		System.out.println("The value of the placeholder attribute is: " + ph);		
+	}
+	
+	public void use_of_clear_in_login() {
+		pause(3000);
+		elementDisplayed(userId);
+		inputText(userId, "September 2025");
+		pause(3000);
+		// common method clearTextFromTheField() is used
+		clearTextFromTheField(userId);
+		pause(3000);
+		inputText(userId, "enthrall_12");
+		pause(3000);
+		elementDisplayed(password);
+		inputText(password, "Nabeeha19@12345678");
+		pause(3000);
+		elementSelected(termsAndCondition);
+		clickElement(termsAndCondition);
+		pause(3000);
+		elementEnabled(login);
+		verifyTextOfTheWebElement(login, "Login");
+		clickElement(login);
+		pause(3000);
+	}
+
 	
 	
 	

@@ -10,65 +10,74 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import pages.ForgotUserId;
 import pages.HomePage;
+import utils.Configuration;
+import static utils.IConstant.*;
 
 public class BaseClass {
 	public WebDriver driver;
 	public HomePage homePage;
+	Configuration configuration;
+	public ForgotUserId forgotUserId;
 	
 	@BeforeMethod
-	public void setUp() throws InterruptedException {
-		// For Chrome Driver
-		System.setProperty("webdriver.chrome.driver", "./driver/chromedriver.exe");		
-		driver = new ChromeDriver();
-		
-		/*
-		// For Firefox Driver
-		// I download version 0.35.0
-		System.getProperty("webdriver.gecko.driver","./driver/geckodriver.exe");
-		driver = new FirefoxDriver();
-		*/
-		
-		/*
-		// For Edge Driver
-		// check your version of edge and download accordingly
-		// I download version 143.0.3650.66
-		System.getProperty("webdriver.edge.driver","./driver/msedgedriver.exe");
-		driver = new EdgeDriver();
-		*/
-		
-		// We need to add the WebDriverManager dependency in the pom.xml file
-		// When physical driver absent, or driver is not  working, because of version issue, then you can use WebDriverManager
-		// WebDriverManager doesn't need any physical driver
-		// From below line, the most updated version of browser will be initialized, when no version is mentioned	
-		
-		// WebDriverManager.chromedriver().setup();
-		// driver = new ChromeDriver();
-		
-		// WebDriverManager.firefoxdriver().setup();
-		// driver = new FirefoxDriver();
-		
-		// WebDriverManager.edgedriver().setup();
-		// driver = new EdgeDriver();
-		
-		// Stable Version: 143.0.7499.42
-		// older version sometimes used for stability of browser, sometime the request from the Authority
-		// if you choose version, then it will use that specific version of driver
-		// WebDriverManager.chromedriver().driverVersion("143.0.7499.42").setup();
-		// driver = new ChromeDriver();
-		
+	public void setUp() {
+		configuration = new Configuration();
+		initDriver();				
 		driver.manage().window().maximize();
-		driver.manage().deleteAllCookies();
-		driver.get("https://portal.cms.gov/portal/");
-		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		driver.manage().deleteAllCookies();		
+		driver.get(configuration.getProperties(URL));		
+		// How can we convert a String to Long type: Long.parseLong(String)
+		long pageLoadTimeout = Long.parseLong(configuration.getProperties(PAGELOAD_WAIT));
+		long implictlyWait = Long.parseLong(configuration.getProperties(IMPLICITLY_WAIT));		
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(pageLoadTimeout));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(implictlyWait));
+		initClass();
+	}
+	
+	public void initDriver() {
+		String browserName = configuration.getProperties(BROWSER);
+		
+		switch (browserName) {
+		
+		case CHROME:
+			System.setProperty("webdriver.chrome.driver", "./driver/chromedriver.exe");		
+			driver = new ChromeDriver();
+			break;
+			
+		case FIREFOX:
+			System.getProperty("webdriver.gecko.driver","./driver/geckodriver.exe");
+			driver = new FirefoxDriver();
+			break;
+			
+		case EDGE:
+			System.getProperty("webdriver.edge.driver","./driver/msedgedriver.exe");
+			driver = new EdgeDriver();
+			break;
+			
+		default:
+			WebDriverManager.chromedriver().setup();
+			driver = new ChromeDriver();
+			break;
+		}
+	}
+	
+	public void initClass() {
 		homePage = new HomePage(driver);
+		forgotUserId = new ForgotUserId(driver);
 	}
 	
 	@AfterMethod
 	public void tearUp() {
 		driver.quit();
 	}
+	
+	// 1. create config.properties file in src/main/resources
+	// 2. create utils package
+	// 3. Inside utils package, create enum Constant, Interface IConstant, Configuration class
+	// 4. Bring changes in Base class
+	// 5. static import is necessary ---> import static utils.IConstant.*	
 	
 	
 	

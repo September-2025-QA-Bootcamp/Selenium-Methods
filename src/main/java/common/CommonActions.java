@@ -117,6 +117,47 @@ public class CommonActions {
 		}
 	}
 	
+	public static void validationOfHeader(WebElement element, String expectedHeader) {
+		try {
+			String actualHeader = element.getText();
+			Loggers.logTheTest(element + " ---> Actual Header : " + actualHeader + ". Expected Header : " + expectedHeader);
+			Assert.assertEquals(actualHeader, expectedHeader, "Header doesn't match");
+		} catch (NullPointerException | NoSuchElementException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + " : This element Not Found");
+			Assert.fail();
+		}
+
+	}
+	
+	public static void validationOfSubHeader(WebElement element, String expectedSubHeader) {
+		try {
+			String actualSubHeader = element.getText();
+			Loggers.logTheTest(element + " ---> Actual SubHeader : " + actualSubHeader + ". Expected SubHeader : " + expectedSubHeader);
+			Assert.assertEquals(actualSubHeader, expectedSubHeader, "SubHeader doesn't match");
+		} catch (NullPointerException | NoSuchElementException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + " : This element Not Found");
+			Assert.fail();
+		}
+	
+	}
+	
+	public static void validationOfOtherHeader(WebElement element, String expectedOtherHeader) {
+		try {
+			String actualOtherHeader = element.getText();
+			Loggers.logTheTest(element + " ---> Actual Other Header : " + actualOtherHeader + ". Expected Other Header : "
+					+ expectedOtherHeader);
+			Assert.assertEquals(actualOtherHeader, expectedOtherHeader, "Other Header doesn't match");
+		} catch (NullPointerException | NoSuchElementException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + " : This element Not Found");
+			Assert.fail();
+		}
+
+	}	
+	
+	
 	
 	
 	

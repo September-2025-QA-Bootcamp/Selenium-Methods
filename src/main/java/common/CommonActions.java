@@ -1,9 +1,12 @@
 package common;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
 import reports.Loggers;
@@ -156,6 +159,70 @@ public class CommonActions {
 		}
 
 	}	
+	
+	public static void selectElelementFromDropdownOnebyOne(WebElement element, List<WebElement> elements) {
+		try {
+			Select select = new Select(element);
+			for(int i=1; i<elements.size(); i++) {
+				Loggers.logTheTest(elements.get(i).getText() + " is present in the dropdpwn");
+				select.selectByIndex(i);
+				pause(3000);
+			}
+			Loggers.logTheTest("Total Element: " + (elements.size() - 1) + " is present in the dropdown");
+		} catch (NullPointerException | NoSuchElementException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + " : This element Not Found");
+			Assert.fail();
+		}		
+	}
+	
+	// drop down by selectByVisibleText() is used as common action
+	public static void selectDropdown(WebElement element, String value) {
+		try {
+			Select select = new Select(element);
+			select.selectByVisibleText(value);
+			Loggers.logTheTest(value + " has been selected from the dropdown of ---> " + element);
+		} catch (NullPointerException | NoSuchElementException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + " : This element Not Found");
+			Assert.fail();
+		}
+	}
+	
+	public static void inputTextThenClickEnter(WebElement element, String input) {
+		try {
+			element.sendKeys(input, Keys.ENTER);
+			Loggers.logTheTest(input + " <-----> has been put into <-----> " + element + " and then clicked by Enter Key");
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}
+	}
+	
+	public static void inputTextThenClickReturn(WebElement element, String input) {
+		try {
+			element.sendKeys(input, Keys.RETURN);
+			Loggers.logTheTest(input + " <-----> has been put into <-----> " + element + " and then clicked by Enter Key");
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}
+	}
+	
+	public static void inputTextThenClickTab(WebElement element, String input) {
+		try {
+			element.sendKeys(input, Keys.TAB);
+			Loggers.logTheTest(input + " <-----> has been put into <-----> " + element + " and then clicked by Enter Key");
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}
+	}
+	
+			
 	
 	
 	

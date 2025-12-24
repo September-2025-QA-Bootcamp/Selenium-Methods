@@ -1,8 +1,9 @@
 package common;
 
+import java.io.File;
 import java.util.List;
 import java.util.NoSuchElementException;
-
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -12,7 +13,7 @@ import org.testng.Assert;
 import reports.Loggers;
 
 public class CommonActions {
-	
+	JavascriptExecutor js;
 	// common method for click()
 	public static void clickElement(WebElement element) {
 		try {
@@ -221,6 +222,32 @@ public class CommonActions {
 			Assert.fail();
 		}
 	}
+	
+	public static void clickElementUsingJavascriptExecutor(WebDriver driver, WebElement element) {
+		// JavascriptExecutor js = (JavascriptExecutor)driver; // instead of writing this 'js' object
+		// we can write below way, (JavascriptExecutor)driver is "js"
+		((JavascriptExecutor)driver).executeScript("arguments[0].click()", element);
+		Loggers.logTheTest("JavascriptExecutor executing ..." + " arguments[0].click()" + " to click on element ---> " + element);
+	}
+	
+	public static void inputTextUsingJavascriptExecutor(WebDriver driver, String script, WebElement element) {
+		((JavascriptExecutor) driver).executeScript(script, element);
+		Loggers.logTheTest("JavascriptExecutor executing ..." + script + " to input Text on element ---> " + element);
+	}
+	
+	public static void scrollIntoViewTheElementUsingJavascriptExecutor(WebDriver driver, WebElement element) {
+		((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true)", element);
+		Loggers.logTheTest("JavascriptExecutor executing ..." + " arguments[0].scrollIntoView(true)" + " to input Text on element ---> " + element);
+	}	
+	
+	// This is for Enthrall IT photo upload common action, not needed for CMS
+	public static void uploadPhotoImage(WebElement element, String location) {
+		File file = new File(location);
+		element.sendKeys(file.getAbsolutePath());
+		pause(4000);
+	}
+	
+	
 	
 			
 	

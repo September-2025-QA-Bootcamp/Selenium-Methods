@@ -4,6 +4,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.testng.Reporter;
 
+import com.aventstack.extentreports.Status;
+
 // Loggers, we give the name of the class
 public class Loggers {
 	// Logger class from Java library
@@ -16,6 +18,7 @@ public class Loggers {
 	public static void logTheTest(String msg) {
 		logger.log(Level.INFO, msg); // INFO messages will be written to the console or its equivalent
 		Reporter.log(msg + "<br>"); // to provide log message in the testNG report [as index.html]
+		TestManager.getTest().log(Status.INFO, msg);  // for extent report as extent_report.html
 	}
 	
 }

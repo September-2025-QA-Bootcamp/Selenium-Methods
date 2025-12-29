@@ -291,6 +291,16 @@ public class HomePageTest extends BaseClass{
 		homePage.authentication_pop_up();
 	}
 	
+	@Test
+	public void use_of_getAttribute_method_02_test () {
+		homePage.use_of_getAttribute_method_02();
+	}
+	
+	@Test
+	public void first_name_validation_test() {
+		homePage.first_name_validation();
+	}
+	
 	
 	
 	

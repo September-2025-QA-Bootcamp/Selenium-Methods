@@ -24,6 +24,8 @@ import java.io.File;
 import java.time.Duration;
 import java.util.Set;
 
+import constants.*;
+
 public class HomePage {
 	WebDriver driver;
 	JavascriptExecutor js;
@@ -849,6 +851,47 @@ public class HomePage {
 		System.out.println("The Text is: " + t);
 		Assert.assertEquals(t, "Congratulations! You must have the proper credentials."); // actual vs expected
 	}	
+	
+	public void use_of_getAttribute_method_02 () {
+		elementDisplayed(userId);
+		pause(3000);
+		getAttributeValue(userId, Attribute.MAX_LENGTH);
+		getAttributeValue(userId, Attribute.PLACEHOLDER);
+		getAttributeValue(userId, Attribute.ID);
+		getAttributeValue(userId, Attribute.Name);	
+	}
+	
+	// This is for Enthrall IT firstName
+	public void first_name_validation() {
+		pause(4000);
+		driver.get("https://enthrallit.com/course/dashboard/enrolls/");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		pause(5000);
+		// create web element on the top of the message, at the beginning [for you guys]
+		WebElement firstName = driver.findElement(By.xpath("//input[@name='f_name']"));
+		verifyLengthOfTheFieldContent(firstName, Attribute.MAX_LENGTH, "150");
+		pause(3000);
+		elementSelected(firstName);
+		inputText(firstName, "&$%*&$#^");
+		WebElement alphabeticCharactersErrorMessageUnderTheField = driver.findElement(By.xpath("//small[contains(text(), ' Must be alphabetic characters. ')]"));
+		pause(3000);
+		verifyErrorMessageUnderTheField(alphabeticCharactersErrorMessageUnderTheField, Attribute.INNER_HTML, " Must be alphabetic characters. ");
+		pause(3000);
+		clearTextFromTheField(firstName);
+		pause(3000);
+		WebElement fNameRequiredFiledErrorMesssage = driver.findElement(By.xpath("//small[@id='id_f_name_error']"));
+		verifyErrorMessageUnderTheField(fNameRequiredFiledErrorMesssage, Attribute.INNER_HTML, " First Name is a required field. ");
+		pause(3000);
+		inputText(firstName, "4568346587436");
+		pause(3000);
+		verifyErrorMessageUnderTheField(alphabeticCharactersErrorMessageUnderTheField, Attribute.INNER_HTML, " Must be alphabetic characters. ");
+		pause(3000);
+		clearTextFromTheField(firstName);
+		pause(3000);
+		inputText(firstName, "Moh'am-mad Mo"); // expected First Name with allowed character
+		pause(3000);	
+	}
 	
 	
 	

@@ -1,15 +1,24 @@
 package common;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 import org.testng.Assert;
 
+import com.google.common.io.Files;
+
+import constants.Attribute;
 import reports.Loggers;
 
 public class CommonActions {
@@ -247,6 +256,83 @@ public class CommonActions {
 		pause(4000);
 	}
 	
+	// Attribute is coming from package constants, we will check the outcome later
+	// Why String type see next method
+	public static String getAttributeValue(WebElement element, Attribute attribute) {
+		String value = null;
+		try {
+			String atr = attribute.getTheAttribute();
+			value = element.getAttribute(atr);
+			Loggers.logTheTest("Value for the attribute \"" + attribute + "\" in the WebElement " + element + " is executed and receive --> " + value);
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}			
+		return value;
+	}
+	
+	public static void verifyLengthOfTheFieldContent (WebElement element, Attribute attribute, String expectedLength) {
+		try {
+			String actualLength = getAttributeValue(element, attribute);
+			Loggers.logTheTest("The field " + element + " ---> has Actual Length : " + actualLength + "and Expected Length : " + expectedLength);
+			Assert.assertEquals(actualLength, expectedLength, "Length doesn't match");
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}
+	}
+	
+	public static void verifyErrorMessageUnderTheField (WebElement element, Attribute attribute, String expectedErrorMessage) {
+		try {
+			String actualErrorMessage = getAttributeValue(element, attribute);
+			Loggers.logTheTest("The Web Element " + element + " ---> has Actual Error Message : " + actualErrorMessage + "and Expected Error Message : " + expectedErrorMessage);
+			Assert.assertEquals(actualErrorMessage, expectedErrorMessage, "Error Message doesn't match");
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}
+	}
+	
+	public static void verifyErrorMessageTopOfThePage (WebElement element, Attribute attribute, String expectedErrorMessage) {
+		try {
+			String actualErrorMessage = getAttributeValue(element, attribute) + " is a required field.";
+			Loggers.logTheTest("The Web Element " + element + " ---> has Actual Error Message : " + actualErrorMessage + " and Expected Error Message : " + expectedErrorMessage);
+			Assert.assertEquals(actualErrorMessage, expectedErrorMessage, "Error Message doesn't match");
+		} catch (NoSuchElementException | NullPointerException e) {
+			e.printStackTrace();
+			Loggers.logTheTest(element + "<----------> has not been found\n" + e.getMessage() );
+			Assert.fail();
+		}
+	}
+	
+	// very very important interview question
+	// TakesScreenshot interface and getScreenshotAs method is used for taking screenshot
+	public static String getSreenShot(String testName, WebDriver driver) {
+		TakesScreenshot ss = (TakesScreenshot) driver;
+		String path = System.getProperty("user.dir") + "/test-output/screenShots";
+		File folder = new File(path); // path represent where I want to create file
+		if (!folder.exists()) {
+			folder.mkdirs(); // mkdirs() create a directory
+		}
+
+		Date date = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyyyy_hh.mm.ss");
+		String formattedDate = dateFormat.format(date);
+
+		File targetFile = new File(path + "/error_" + testName + "_" + formattedDate + ".png");
+		try {
+			File srcFile = ss.getScreenshotAs(OutputType.FILE);
+			Files.copy(srcFile, targetFile);
+			Loggers.logTheTest("Screenshot has been successfully capture at: \n" + targetFile.getAbsolutePath());
+		} catch (WebDriverException | IOException e) {
+			e.printStackTrace();
+			Loggers.logTheTest("Screenshot cannot be captured");
+		}
+		return targetFile.getAbsolutePath();
+	}
 	
 	
 			

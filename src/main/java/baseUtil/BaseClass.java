@@ -1,30 +1,63 @@
 package baseUtil;
 
+import java.lang.reflect.Method;
 import java.time.Duration;
 
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Optional;
+import org.testng.annotations.Parameters;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.beust.jcommander.Parameter;
+
+import common.CommonActions;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pages.ForgotUserId;
 import pages.HomePage;
 import utils.Configuration;
 import static utils.IConstant.*;
+import reports.ExtentReportManager;
+import reports.TestManager;
 
 public class BaseClass {
 	public WebDriver driver;
 	public HomePage homePage;
 	Configuration configuration;
 	public ForgotUserId forgotUserId;
+	ExtentReports extentReports;
+	ExtentTest extentTest;
+	
+	@BeforeSuite
+	public void initialReporting() {
+		extentReports = ExtentReportManager.initialReports();
+	}
+	
+	@BeforeClass
+	public void beforeClassSetUp() {
+		configuration = new Configuration();
+	}
 	
 	@BeforeMethod
-	public void setUp() {
-		configuration = new Configuration();
-		initDriver();				
+	public void initialTest(Method method) {
+		extentTest = TestManager.createTest(extentReports, method.getName());
+		extentTest.assignCategory(method.getDeclaringClass().getName());
+	} 
+	
+
+	@BeforeMethod	
+	public void setUp() {		
+		initDriver();			
 		driver.manage().window().maximize();
 		driver.manage().deleteAllCookies();		
 		driver.get(configuration.getProperties(URL));		
@@ -73,11 +106,25 @@ public class BaseClass {
 		driver.quit();
 	}
 	
-	// 1. create config.properties file in src/main/resources
-	// 2. create utils package
-	// 3. Inside utils package, create enum Constant, Interface IConstant, Configuration class
-	// 4. Bring changes in Base class
-	// 5. static import is necessary ---> import static utils.IConstant.*	
+	@AfterMethod
+	public void afterEachTest(Method method, ITestResult result) {
+		for(String group: result.getMethod().getGroups()) {
+			extentTest.assignCategory(group);
+		}		
+		if(result.getStatus() == ITestResult.SUCCESS) {
+			extentTest.log(Status.PASS, "Test PASSED");
+		}else if(result.getStatus() == ITestResult.FAILURE) {
+			extentTest.addScreenCaptureFromPath(CommonActions.getSreenShot(method.getName(), driver));
+			extentTest.log(Status.FAIL, "Test FAILED");
+		}else if(result.getStatus() == ITestResult.SKIP) {
+			extentTest.log(Status.SKIP, "Test SKIPPED");
+		}
+	}
+	
+	@AfterSuite
+	public void publishReport() {
+		extentReports.flush();
+	}
 	
 	
 	

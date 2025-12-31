@@ -2,6 +2,7 @@ package pages;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
@@ -10,18 +11,22 @@ import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.How;
 import org.openqa.selenium.support.PageFactory;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 // new, you have to manually write it to get access of common actions
 // this is possible when they are static in nature, * means all
 // This is called static import
 import static common.CommonActions.*;
+import static common.CommonWaits.*;
 
 import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.time.Duration;
+import java.util.List;
 import java.util.Set;
 
 import constants.*;
@@ -30,11 +35,16 @@ public class HomePage {
 	WebDriver driver;
 	JavascriptExecutor js;
 	Actions actions;
+	WebDriverWait wait;
+	Dimension dimension;
 
 	public HomePage(WebDriver driver) {
 		this.driver = driver;
 		// If there is no PageFactory class, WebElement will show NullPointerException
 		PageFactory.initElements(driver, this);
+		wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		js = (JavascriptExecutor)driver;
+		actions = new Actions(driver);
 	}
 	
 	@FindBy(xpath = "//em[@id='cms-homepage-header-logo-unauth' and @class='cms-icon cms-sprite-loggedout ms-3']")
@@ -514,7 +524,6 @@ public class HomePage {
 		WebElement ourLocations = driver.findElement(By.xpath("//a[normalize-space(text())='Our Locations' and @class='hidden-xs dropdown']"));
 		// for mouse Hover Action
 		pause(3000);
-		actions = new Actions(driver);
 		actions.moveToElement(ourLocations).build().perform();
 		pause(4000);
 		// Then click on Mount Sinai Hospital from the list
@@ -609,7 +618,6 @@ public class HomePage {
 	// user id field is used to input text
 	public void alternate_of_send_keys_method() {
 		pause(3000);
-		js = (JavascriptExecutor)driver;
 		js.executeScript("arguments[0].value = 'September 2025 QA'", userId);
 		pause(5000);
 	}
@@ -892,6 +900,239 @@ public class HomePage {
 		inputText(firstName, "Moh'am-mad Mo"); // expected First Name with allowed character
 		pause(3000);	
 	}
+	
+	// very very important
+	// when the web element always failed in test, use explicitly wait, 
+	// this web site doesn't have complex elements
+	// "login" web element 
+	// using visibilityOfElementLocated() method , Number one, Callled by "By" class
+	// This is a very common scenario in industry to use explicitly wait
+	public void use_of_explicitly_wait_01() {		
+		pause(3000);
+		wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//button[@name='Submit Login']"))).click();
+		pause(3000);
+	}
+	
+	// New User Registration webElement
+	// using elementToBeClickable() method, number two, by Web Element
+	public void use_of_explicitly_wait_02a(){
+		pause(3000);
+		wait.until(ExpectedConditions.elementToBeClickable(newUserRegistration)).click();
+		pause(3000);
+	}
+	
+	// New User Registration webElement
+	// using elementToBeClickable() method, number two, by By class
+	public void use_of_explicitly_wait_02b(){
+		pause(3000);
+		wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[contains(text(), 'ration')]"))).click();
+		pause(3000);
+	}
+	
+	// userId webElement
+	// using visibilityOf() method, number three
+	public void use_of_explicitly_wait_03(){
+		pause(3000);
+		wait.until(ExpectedConditions.visibilityOf(userId)).isDisplayed(); // here userId is webElement
+		inputText(userId, "enthrall_12");
+		pause(3000);
+	}
+	
+	// Try to remember this above 3 conditions-name for interview, most of the time they asked it
+	
+	// Not important, you can use it to practice
+	// "unlock" web element 
+	// using presenceOfElementLocated() method
+	public void use_of_explicitly_wait_04(){
+		pause(3000);
+		wait.until(ExpectedConditions.presenceOfElementLocated(By.id("cms-unlock-account"))).click();
+		pause(3000);
+	}
+	
+	// Not important, you can use it to practice
+	// "Login Button" web element
+	// using textToBePresentInElement() method
+	// this is not a clickable method, just to recognize the web element
+	public void use_of_explicitly_wait_05(){
+		pause(3000);
+		boolean outcome = wait.until(ExpectedConditions.textToBePresentInElement(login, "Login"));
+		System.out.println(outcome);
+		clickElement(login);
+		pause(3000);
+	}
+	
+	// New User Registration webElement
+	// using commonWaits for elementToBeClickable() method
+	public void use_of_explicitly_wait_from_common_waits(){
+		pause(4000);
+		waitUntilTheConditionThenClick(driver, newUserRegistration);
+		pause(4000);
+	}
+	
+	// Use of findElements()
+	// Tough, try your best
+	public void mouse_hover_action_on_about_us() {
+		pause(3000);
+		driver.navigate().to("https://www.mountsinai.org/");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20)); 
+		WebElement aboutUs = driver.findElement(By.xpath("//a[normalize-space(text()) = 'About Us' and @class='hidden-xs dropdown']")); 
+		pause(3000);
+		actions.moveToElement(aboutUs).build().perform(); // used for mouse hover action
+		pause(3000); // Until here, we did it before
+		
+		// TODO: Not working, have to find out.
+		// Use of findElements() -- very very important Interview question
+		List<WebElement> listOfAboutUs = driver.findElements(By.xpath("//a[normalize-space(text())='AUs' and @class='hidden-xs dropdown']//following-sibling::div//child::div//child::div//child::ul"));	
+		for(int i = 0; i<listOfAboutUs.size(); i++) {
+			System.out.println(listOfAboutUs.get(i).getText());
+		}
+		
+	}
+	
+	public void set_a_specific_size_for_window() {
+		pause(3000);
+		// Will get the size of cms window, get size is different for different computer
+		System.out.println("The size of the CMS screen is: "+ driver.manage().window().getSize());
+		dimension = new Dimension(1000, 700);  // (int width, int height)
+		driver.manage().window().setSize(dimension);
+		pause(3000);
+		System.out.println("The set size for the CMS screen is: " + driver.manage().window().getSize());
+		pause(3000);
+		
+		// Extra not related to this method, although you can skip
+		pause(3000);
+		driver.navigate().to("https://www.cvs.com");
+		pause(3000);
+		System.out.println("The set size for the CVS screen is: "+ driver.manage().window().getSize());
+		driver.manage().window().maximize();
+		pause(3000);
+		System.out.println("The set size for the CVS maximize screen is: "+ driver.manage().window().getSize());
+		pause(3000);
+		driver.manage().window().setSize(dimension); // just to show again the set size
+		pause(3000);
+		System.out.println("The set size for the CVS screen is: "+ driver.manage().window().getSize());
+		pause(3000);;
+		driver.manage().window().fullscreen();
+		pause(3000);
+		System.out.println("The set size for the CVS full screen is: "+ driver.manage().window().getSize());	
+
+	}
+	
+	// only important for interview
+	public void use_of_right_click_action() {
+		pause(3000);
+		driver.get("https://demo.guru99.com/test/simple_context_menu.html");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		WebElement rcButton = driver.findElement(By.xpath("//span[contains(text(), 'right click me')]"));
+		// the below line is to learn
+		actions.moveToElement(rcButton).contextClick().build().perform();
+		// right click action done by contextClick()
+		pause(3000);
+		
+		// From Line 1038, not part of testing, just completed the scenario
+		// Just keep below code, Can't find the web element for Edit at present, the line 1038 is from my collection.
+		// Below 2 is not relevant to right click, just doing some extra, which we know already
+		// Next: I want to click on Edit link on the displayed menu options
+		WebElement edit = driver.findElement(By.xpath("//span[text()='Edit']"));
+		pause(3000);
+		edit.click(); // a "regular click", not a "right click"
+		pause(3000);
+		// Switch to the alert box and click on OK button
+		Alert alert = driver.switchTo().alert();
+		System.out.println("\nAlert Text: " + alert.getText());
+		alert.accept();
+		pause(3000);			
+	}
+	
+	// only important for interview
+	public void use_of_double_click_action() {
+		pause(3000);
+		driver.get("https://demo.guru99.com/test/simple_context_menu.html");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		pause(3000);
+		WebElement dcButton = driver.findElement(By.xpath("//button[text()='Double-Click Me To See Alert']"));
+		actions.doubleClick(dcButton).build().perform();
+		pause(3000);
+		// Not part of the double click action
+		// Switch to the alert box and click on OK button
+		Alert alert = driver.switchTo().alert();
+		System.out.println("\nAlert Text: " + alert.getText());
+		alert.accept();
+		pause(3000);		
+	}
+	
+	// not important
+	public void use_of_drag_and_drop_action () {
+		pause(3000);
+		driver.get("https://demo.guru99.com/test/drag_drop.html");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		// WebElement which needs to drag (Bank Button)
+		WebElement sourceLocator = driver.findElement(By.xpath("//a[contains(text(), 'BA')]")); 
+		// Element where need to be dropped.(In 'Account' field of debit side)
+		WebElement targetLocator = driver.findElement(By.xpath("//ol[contains(@id, 'b')]")); 
+		// We Use Actions class for drag and drop.
+		pause(5000);
+		actions.dragAndDrop(sourceLocator, targetLocator).build().perform();
+		pause(5000);				
+	}
+	
+	// How to read the content of a Table 
+	public void read_table () {
+		pause(5000);	
+		driver.get("https://enthrallit.com/selenium/");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(20));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		pause(5000);	
+		WebElement hs = driver.findElement(By.xpath("//h5[text()='Hide / Show']"));
+		// Scrolled to the specific element
+		scrollIntoViewTheElementUsingJavascriptExecutor(driver, hs);
+		pause(5000);	
+		// The below line will not work for row and cell, we use line 1043 by cssSelector
+		// WebElement table = driver.findElement(By.tagName("table")); // tag as a locator
+		WebElement table = driver.findElement(By.cssSelector("table.table.table-striped.table-bordered.table-sm "));
+		System.out.println(table.getText());
+		pause(3000);
+	}
+	
+	// How to read the row of a Table 
+	public void read_any_row_of_the_table () {
+		pause(5000);	
+		driver.get("https://enthrallit.com/selenium/");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(40));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		pause(5000);	
+		WebElement hs = driver.findElement(By.xpath("//h5[text()='Hide / Show']"));
+		// Scrolled to the specific element
+		scrollIntoViewTheElementUsingJavascriptExecutor(driver, hs);
+		pause(5000);	
+		// tr -  table row, nth clild -- row number
+		WebElement row = driver.findElement(By.cssSelector("table.table.table-striped.table-bordered.table-sm tr:nth-child(3)"));
+		System.out.println(row.getText());
+		pause(5000);
+	}
+		
+	// How to read any cell of a row of the Table 
+	public void read_any_cell_of_a_row_of_the_table () {
+		pause(5000);	
+		driver.get("https://enthrallit.com/selenium/");
+		driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(40));
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(20));
+		pause(5000);	
+		WebElement hs = driver.findElement(By.xpath("//h5[text()='Hide / Show']"));
+		// Scrolled to the specific element
+		scrollIntoViewTheElementUsingJavascriptExecutor(driver, hs);
+		pause(5000);	
+		// tr -  table row, nth clild -- row number, td -- cell
+		WebElement cell = driver.findElement(By.cssSelector("table.table.table-striped.table-bordered.table-sm tr:nth-child(3) td:nth-child(1)"));
+		System.out.println(cell.getText());
+		pause(5000);
+	}
+		
+	
 	
 	
 	

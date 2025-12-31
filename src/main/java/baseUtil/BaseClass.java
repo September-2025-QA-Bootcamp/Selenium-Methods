@@ -2,7 +2,6 @@ package baseUtil;
 
 import java.lang.reflect.Method;
 import java.time.Duration;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -19,8 +18,6 @@ import org.testng.annotations.Parameters;
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.Status;
-import com.beust.jcommander.Parameter;
-
 import common.CommonActions;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import pages.ForgotUserId;
@@ -54,10 +51,10 @@ public class BaseClass {
 		extentTest.assignCategory(method.getDeclaringClass().getName());
 	} 
 	
-
+	@Parameters("browser")
 	@BeforeMethod	
-	public void setUp() {		
-		initDriver();			
+	public void setUp(@Optional(EDGE) String browserName) {		
+		initDriver(browserName);			
 		driver.manage().window().maximize();
 		driver.manage().deleteAllCookies();		
 		driver.get(configuration.getProperties(URL));		
@@ -69,8 +66,19 @@ public class BaseClass {
 		initClass();
 	}
 	
-	public void initDriver() {
-		String browserName = configuration.getProperties(BROWSER);
+	// BASED ON VALUE OF TESTSUITE, BROWSER WILL BE CHOOSEN
+	
+	// If any reason, in our test suit, parameter value is absent, 
+	// default: WebdriverManager is instantiating the ChromeDriver
+	
+	// spelling mistake in testng.xml suite, then browser will not match and get the default one
+	// default: WebdriverManager is instantiating the ChromeDriver
+	
+	// If we run test from any TestClass, which browser will run?
+	// Edge. why? browser is absent in config.properties file, so it will take from @Optional(EDGE)
+	
+	public void initDriver(String browserName) {
+		// String browserName = configuration.getProperties(BROWSER);
 		
 		switch (browserName) {
 		

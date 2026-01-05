@@ -1,9 +1,14 @@
 package pagesTest;
 
 import java.awt.AWTException;
+import java.time.Duration;
 
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.Test;
-
 import baseUtil.BaseClass;
 
 public class HomePageTest extends BaseClass{
@@ -376,9 +381,212 @@ public class HomePageTest extends BaseClass{
 		homePage.read_any_cell_of_a_row_of_the_table();
 	}
 	
+	@Test(enabled = true, priority = 3, groups = {"functionalTest", "sanityTest", "smokeTest", "regressionTest"})
+	public void getMethods02Test() {
+		homePage.getMethods02();
+	}
+	
+	@Test (enabled = true, priority = 1, groups = {"regressionTest"})
+	public void getMethods03Test() {
+		homePage.getMethods03();
+	}
+	
+	@Test(enabled = true, priority = 2, groups = {"functionalTest", "sanityTest"})
+	public void getMethods04Test() {
+		homePage.getMethods04();
+	}
+	
+	@Test
+	public void use_of_expectedExceptions01Test () {
+		homePage.use_of_expectedExceptions01();
+	}
+	
+	@Test
+	public void use_of_expectedExceptions02Test () {
+		homePage.use_of_expectedExceptions02();
+	}
+	
+	@Test
+	public void use_of_expectedExceptions03Test () throws ArithmeticException {
+		homePage.use_of_expectedExceptions03();
+	}
+	
+	@Test (expectedExceptions = ArithmeticException.class)
+	public void use_of_expectedExceptions04Test () {
+		homePage.use_of_expectedExceptions04();
+	}
+	
+	@Test (expectedExceptions = org.openqa.selenium.NoSuchElementException.class)
+	public void use_of_expectedExceptions05Test () {
+		homePage.use_of_expectedExceptions05();
+	}
+	
+	@Test
+	public void new_user_registration_button_enabled_01_test(){
+		homePage.new_user_registration_button_enabled_01();
+	}
+	
+	@Test
+	public void new_user_registration_button_enabled_02_test(){
+		homePage.new_user_registration_button_enabled_02();
+	}
+	
+	@Test
+	public void new_user_registration_button_enabled_03_test(){
+		homePage.new_user_registration_button_enabled_03();
+	}
+	
+	@Test
+	public void new_user_registration_button_enabled_04_test(){
+		homePage.new_user_registration_button_enabled_04();
+	}
+	
+	// Important interview question
+	// use of dependsOnMethods
+	// change the new_user_registration_button_enabled method to fail [see disable method below]
+	// and see the below method skipped as it depends on new_user_registration_button_disabled
+	
+	@Test
+	public void new_user_registration_button_enabled_test(){
+		homePage.new_user_registration_button_enabled();
+	}
+	
+	@Test
+	public void new_user_registration_button_disabled_test(){
+		homePage.new_user_registration_button_disabled();
+	}	
+	
+	// the depends method is the test method, not from home page, I made mistake
+	@Test(dependsOnMethods = "new_user_registration_button_enabled_test")
+	public void new_user_registration_button_click_test() {
+		homePage.new_user_registration_button_click();
+	}
 	
 	
+	@Test (dependsOnMethods = "new_user_registration_button_disabled_test")
+	public void new_user_registration_button_click_01_test() {
+		homePage.new_user_registration_button_click();
+	}
 	
+	@Test
+	public void skipHomePageTitle01Test() {
+		homePage.skipHomePageTitle01();
+	}
 	
+	@Test
+	public void skipHomePageTitle02Test() {
+		homePage.skipHomePageTitle02();
+	}
+	
+	// When we use invocation count? if you know some test cases fail for no reason
+	// and then you fix it, you can run more than one time time by invocation count	
+	// invocationCount = The invocationCount attribute tells how many times TestNG should run a test method
+	// timeOut = The maximum number of milliseconds a test case should take.
+	@Test (invocationCount = 5, timeOut = 10000)
+	public void new_user_registration_button_enabled_05_test(){
+		homePage.new_user_registration_button_enabled_05();
+	}
+	
+	// use of threadPoolSize
+	// Is the threadPoolSize working? No, because we need multiple thread in multiple device/computer connected
+	// may be working as multi threaded, can't see locally with one computer
+	// The threadPoolSize attribute tells it to form a thread pool to run the test method through multiple threads.
+	@Test(invocationCount = 6, threadPoolSize = 3, timeOut = 10000)
+	public void new_user_registration_button_enabled_06_test(){
+		homePage.new_user_registration_button_enabled_06();
+	}
+	
+	// Below we wrote the code directly in test cases, you will not find any code in HomePage
+	// interview question: what are the alternative of click() method 
+	// but they are not expecting first 2 answer, they are looking for javascriptExecutor
+	// alternate of click()
+	@Test
+	public void alternate_of_click_method_in_loginButtonTest01() throws InterruptedException {
+		driver.findElement(By.id("cms-login-submit")).sendKeys(Keys.ENTER);
+		Thread.sleep(3000);
+	}
+	
+
+	// alternate of click()
+	@Test
+	public void alternate_of_click_method_in_loginButtonTest02() throws InterruptedException {
+		driver.findElement(By.id("cms-login-submit")).sendKeys(Keys.RETURN);
+		Thread.sleep(3000);
+	}
+	
+	// Important interview question + they ask you to write the code in MS word
+	// so, practice it by paper pen, then in ms word
+	// alternate of click()
+	@Test
+	public void alternate_of_click_method_in_loginButtonTest03() throws InterruptedException {
+		WebElement loginButton = driver.findElement(By.id("cms-login-submit"));
+		JavascriptExecutor js = (JavascriptExecutor) driver; // We don't need it here
+		// Because JavascriptExecutor Interface is instantiated in base class, js object came form there
+		js.executeScript("arguments[0].click()", loginButton);
+		// arguments[0] means, find the web element of index 0, first occurrence
+		Thread.sleep(4000);
+	}
+	
+	// alternate of click()
+	// "arguments[0].click()" ---> above is easy to memorize, memorize it, if you want
+	// follow the above one, because you can use any kind of locator 
+	// (specially xpath is difficult to create by below one)
+	// don't follow this one, but if you ever see it, i hope you can recognize it
+	@Test
+	public void alternate_of_click_method_in_loginButtonTest04() throws InterruptedException {
+		JavascriptExecutor js = (JavascriptExecutor) driver;
+		js.executeScript("document.getElementById('cms-login-submit').click();");
+		Thread.sleep(4000);
+	}
+	
+	// below is high level, so just see, don't take them seriously
+	// alternative to click an web element in many ways (never memorize, a collection of code)
+	
+	// Not important
+	
+	// alternate of click()
+	@Test
+	public void homepageLoginButtonTest06() {
+		WebElement homepageLoginButton = driver.findElement(By.xpath("//button[@id='cms-login-submit']"));
+		Actions actions = new Actions(driver);
+		actions.click(homepageLoginButton).perform();
+	}
+	
+	// Not important
+	// alternate of click()
+	@Test
+	public void homepageLoginButtonTest07() {
+		WebElement homepageLoginButton = driver.findElement(By.xpath("//button[@id='cms-login-submit']"));
+		Actions actions = new Actions(driver);
+		actions.moveToElement(homepageLoginButton).click().perform();
+	}
+	
+	// Not important
+	// alternate of click()
+	@Test
+	public void homepageLoginButtonTest08() {
+		WebElement homepageLoginButton = driver.findElement(By.xpath("//button[@id='cms-login-submit']"));
+		Actions actions = new Actions(driver);
+		actions.clickAndHold(homepageLoginButton).release().perform();
+	}
+	
+	// Not important
+	// alternate of click()
+	@Test
+	public void homepageLoginButtonTest09() {
+		WebElement homepageLoginButton = driver.findElement(By.xpath("//button[@id='cms-login-submit']"));
+		Actions actions = new Actions(driver);
+		actions.sendKeys(homepageLoginButton, Keys.RETURN).perform();
+	}
+	
+	// Sets the amount of time to wait for an asynchronous script to finish execution before throwing an error. 
+	// not important at all
+	@Test(enabled = true)
+	public void use_of_set_script_timeout_for_window() {
+		driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(15));
+		// scriptTimeout () method deprecated, so giving you warning, this method is going to be out from selenium
+        // you use @SuppressWarnings("deprecation")
+		driver.get("https://www.ebay.com");	
+	}
 
 }

@@ -14,6 +14,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.SkipException;
 
 // new, you have to manually write it to get access of common actions
 // this is possible when they are static in nature, * means all
@@ -116,6 +117,9 @@ public class HomePage {
 	
 	@FindBy(xpath = "//h1[text()='CMS Enterprise Portal - Help Center']")
 	WebElement helpPageHeader;
+	
+	@FindBy(xpath = "//p[contains(text(), 'Select Your Application')]")
+	WebElement stepOneNewUserRegistrationHeader;
 	
 	
 	// We used throws InterruptedException to handle the exception
@@ -1131,6 +1135,190 @@ public class HomePage {
 		System.out.println(cell.getText());
 		pause(5000);
 	}
+	
+	// regarding TestNG 
+	// use of groups
+	public void getMethods02() {
+		// getTitle() provide us the title of the page
+		String actual = driver.getTitle();
+		System.out.println("Title of the Page: " + actual);
+		String expected = "CMS Enterprise Portal";
+		Assert.assertEquals(actual, expected, "Title doesn't match up");
+		// if the Assertion [validation] fail, "Title doesn't match up" will show up
+	}
+	
+	public void getMethods03() {
+		// getTitle() provide us the title of the page
+		String actual = driver.getTitle();
+		System.out.println("Title of the Page: " + actual);
+		String expected = "CMS Enterprise Portal";
+		Assert.assertEquals(actual, expected, "Title doesn't match up");
+		// if the Assertion [validation] fail, "Title doesn't match up" will show up
+	}
+	
+	public void getMethods04() {
+		// getTitle() provide us the title of the page
+		String actual = driver.getTitle();
+		System.out.println("Title of the Page: " + actual);
+		String expected = "CMS Enterprise Portal";
+		Assert.assertEquals(actual, expected, "Title doesn't match up");
+		// if the Assertion [validation] fail, "Title doesn't match up" will show up
+	}
+	
+	// it will fail because of ArithmeticException
+	public void use_of_expectedExceptions01 () {
+		System.out.println("We can verify whether a code throws the expected exception or not. Here it will fail");
+		int i = 1/0;	
+	}
+	
+	// it will pass because of using try catch block
+	public void use_of_expectedExceptions02 () {
+		try {
+			System.out.println("We can verify whether a code throws the expected exception or not. Here it will fail");
+			int i = 1/0;
+		} catch (ArithmeticException e) {
+			e.printStackTrace();
+		}			
+	}
+	
+	// we can use throws to throw the Exception, it should pass
+	public void use_of_expectedExceptions03 () throws ArithmeticException {
+		System.out.println("We can verify whether a code throws the expected exception or not. Here it will fail");
+		int i = 1/0;	
+	}
+	
+	// it will pass because of TestNG Annotation
+	public void use_of_expectedExceptions04 () {
+		System.out.println("We can verify whether a code throws the expected exception or not. Here it will fail");
+		int i = 1/0;	
+	}
+	
+	// Login Button
+	// wrong element is used, it will show NoSuchElementException
+	// if we use Expected exception in Test annotation, then it will pass
+	public void use_of_expectedExceptions05 () {
+		driver.findElement(By.name("xxxSubmit Login")).click();
+		pause(3000);
+	}
+	
+	// New: use of assertTrue(true)
+	public void new_user_registration_button_enabled_01(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled); // Actual outcome from Selenium method
+		Assert.assertTrue(true);	 // Expected outcome
+	}
+	
+	// New: use of assertTrue(false)
+	public void new_user_registration_button_enabled_02(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled);// Actual Result or outcome which doesn't match with your below expectation
+		Assert.assertTrue(false); // Expected Result // java.lang.AssertionError: expected [true] but found [false]
+		// Although the outcome is true, but because of difference between expected vs actual, the test case failed
+	}
+	
+	// New: use of assertFalse(false)
+	public void new_user_registration_button_enabled_03(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled); // Actual outcome from Selenium method
+		// Assert.assertTrue(true, "The New User Registration Button is disable .....");	 // This error message will appear if failed
+		// Assert.assertTrue(false, "The New User Registration Button is disable .....");	 // This error message will appear if failed
+		Assert.assertFalse(false, "The New User Registration Button is disable .....");	 // Expected outcome
+	}
+	
+	// New: use of assertFalse(true)
+	public void new_user_registration_button_enabled_04(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled); // Actual outcome from Selenium method
+		Assert.assertFalse(true, "The New User Registration Button is disable .....");	  // false false means true, False true means false, so failed	
+	}
+	
+	// this below method is enabled, it will pass
+	public void new_user_registration_button_enabled(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled);
+		Assert.assertTrue(true);
+	}
+	
+	// this below method is disabled, it will fail
+	public void new_user_registration_button_disabled(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'hgfycjdschdchs')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled);
+		Assert.assertTrue(true);
+	}
+	
+	// for test dependsOnMethods()
+	public void new_user_registration_button_click() {
+		pause(3000);
+		clickElement(newUserRegistration);
+		pause(3000);
+		verifyTitle(driver, "CMS Enterprise Portal - New User Registration");
+		verifyCurrentUrl(driver, "https://portal.cms.gov/portal/newuserregistration");
+		validationOfHeader(stepOneNewUserRegistrationHeader, "Step #1: Select Your Application");
+		pause(3000);
+	}
+	
+	// This test to explain the next one, it is not tested
+	public void nonSkipHomePageTitleTest() {
+		String actual = driver.getTitle();
+		System.out.println("Title name: "+ actual);
+		String expected = "CMS Enterprise Portal"; 
+		Assert.assertEquals(actual, expected, "Home Page Title doesn't match ....... ");
+		System.out.println("No need to skip the test");
+	}	
+	
+	// Important interview question: What is Exception? How we handle exception?
+	// how to handle Exception: try, catch, throw, throws, finally
+	// below examples of where 'throw' is used
+	// Que: How to skip a test? Ans: by "throw new SkipException()" method
+	// toughest interview question: throw vs throws
+	public void skipHomePageTitle01() {
+		String expected = "CMS Enterprise Portal";
+		if(expected.equals(driver.getTitle())) {
+			throw new SkipException("Skipping -- as the title matches as expected");
+			// if above condition is true, then no more below execution
+		}else {
+			System.out.println("Home Page Title doesn't match...");
+		}
+		System.out.println("I am out of the if else condition");
+	}
+	
+	public void skipHomePageTitle02() {
+		String expected = "   CMS Enterprise Portal"; // title will not match
+		if(expected.equals(driver.getTitle())) {
+			throw new SkipException("Skipping -- as the title matches as expected");
+			// if above condition is true, then no more below execution
+		}else {
+			System.out.println("Home Page Title doesn't match...");
+		}
+		System.out.println("I am out of the if else condition");
+	}
+	
+	public void new_user_registration_button_enabled_05(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled); // Actual outcome from Selenium method
+		Assert.assertTrue(true, "The New User Registration Button is disable .....");	  // false false means true, False true means false, so failed	
+	}
+	
+	public void new_user_registration_button_enabled_06(){
+		WebElement nur = driver.findElement(By.xpath("//a[contains(text(), 'New User Registration')]"));
+		boolean buttonEnabled = nur.isEnabled();			
+		System.out.println("Is the Button Enabled? Ans: "+ buttonEnabled); // Actual outcome from Selenium method
+		Assert.assertTrue(true, "The New User Registration Button is disable .....");	  // false false means true, False true means false, so failed	
+		System.out.println("Thread: "+ Thread.currentThread().getName()); 
+		// to know which thread is running
+	}
+
+
+	
+		
+
 		
 	
 	
